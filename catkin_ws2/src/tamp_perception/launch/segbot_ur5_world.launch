@@ -1,0 +1,34 @@
+<launch>
+  <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="world" default="gazebo" />
+  <arg name="debug" default="false" />
+  <arg unless="$(arg debug)" name="gazebo_binary" value="gzserver" />
+  <arg if="$(arg debug)" name="gazebo_binary" value="debug" />
+
+  <!-- set use_sim_time flag -->
+  <group if="$(arg use_sim_time)">
+    <param name="/use_sim_time" value="true" />
+  </group>
+
+  <!-- enable gui -->
+  <group if="$(arg gui)">
+    <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
+  </group>
+
+  <!-- load world-->
+  <!-- <node name="$(arg world)" pkg="gazebo_ros" type="$(arg gazebo_binary)" args="$(find tamp_perception)/worlds/banquet_table.world" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" /> -->
+  <node name="$(arg world)" pkg="gazebo_ros" type="$(arg gazebo_binary)" args="$(find tamp_perception)/worlds/two_tables.world" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
+  <!-- <node name="$(arg world)" pkg="gazebo_ros" type="$(arg gazebo_binary)" args="$(find tamp_perception)/worlds/small_house.world" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" /> -->
+
+  <!-- load blocks -->
+  <!-- <node name="box_red" pkg="gazebo_ros" type="spawn_model" args="-file $(find tamp_perception)/models/box_red_new/model.sdf -sdf -model box_red -x 7.3 -y 0.2 -z 2.0" /> -->
+  <!-- <node name="box_red" pkg="gazebo_ros" type="spawn_model" args="-file $(find tamp_perception)/models/box_red_previous/model.sdf -sdf -model box_red -x 7.3 -y 0.2 -z 2.0" /> -->
+  <node name="utensil_nerf_bowl" pkg="gazebo_ros" type="spawn_model" args="-file $(find tamp_perception)/models/utensil_nerf_bowl/model.sdf -sdf -model utensil_nerf_bowl -x 7.3 -y 0.2 -z 2.0" />
+  
+  <node name="box_green" pkg="gazebo_ros" type="spawn_model" args="-file $(find tamp_perception)/models/box_green/model.sdf -sdf -model box_green -x 7.3 -y 0.4 -z 2.0" />
+  <node name="box_blue" pkg="gazebo_ros" type="spawn_model" args="-file $(find tamp_perception)/models/box_blue/model.sdf -sdf -model box_blue -x 7.3 -y 0.6 -z 2.0" />
+
+  <!-- load blocks -->
+  <!-- <node name="box_1" pkg="gazebo_ros" type="spawn_model" args="-file $(find tamp_perception)/models/box_yellow1.model -x 7.3 -y 0.2 -z 2.0 -Y 3.14159 -urdf -model box_blue" /> -->
+</launch>

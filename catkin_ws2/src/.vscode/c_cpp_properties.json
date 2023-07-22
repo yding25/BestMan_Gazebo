@@ -1,0 +1,41 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/yan/catkin_ws1/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_interruptable_action_server/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_logical_translator/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_manipulation/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_mapper/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_perception/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_planning_common/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/bwi_tools/include/**",
+        "/home/yan/catkin_ws1/src/gazebo-pkgs/gazebo_grasp_plugin/include/**",
+        "/home/yan/catkin_ws1/src/gazebo-pkgs/gazebo_state_plugins/include/**",
+        "/home/yan/catkin_ws1/src/gazebo-pkgs/gazebo_test_tools/include/**",
+        "/home/yan/catkin_ws1/src/gazebo-pkgs/gazebo_version_helpers/include/**",
+        "/home/yan/catkin_ws1/src/gazebo-pkgs/gazebo_world_plugin_loader/include/**",
+        "/home/yan/catkin_ws1/src/libsegwayrmp/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/multi_level_map_utils/include/**",
+        "/home/yan/catkin_ws1/src/general-message-pkgs/object_msgs_tools/include/**",
+        "/home/yan/catkin_ws1/src/bwi_common/plan_execution/include/**",
+        "/home/yan/catkin_ws1/src/roboticsgroup_gazebo_plugins/include/**",
+        "/home/yan/catkin_ws1/src/segbot/segbot_arm_manipulation/include/**",
+        "/home/yan/catkin_ws1/src/segbot/segbot_sensors/include/**",
+        "/home/yan/catkin_ws1/src/segbot/segbot_simulation_apps/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

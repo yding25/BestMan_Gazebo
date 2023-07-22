@@ -1,0 +1,54 @@
+<launch>
+  <arg name="use_full_gazebo_model" default="false" />
+  <arg name="urdf_file" default="$(find tamp_perception)/robots/segbot/urdf/segbot_ur5_v2_with_camera.urdf.xacro"/>
+
+  <!-- load the world -->
+  <include file="$(find tamp_perception)/launch/segbot_ur5_world.launch"></include>
+
+  <!-- load the map -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find tamp_perception)/maps/banquet_table.yaml" />
+  <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find tamp_perception)/maps/small_house_map.yaml" /> -->
+
+  <!-- launch the segbot and ur5 urdf description -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(arg urdf_file)' --inorder use_full_gazebo_model:=$(arg use_full_gazebo_model)" />
+
+  <!-- load auxiliary segbot sensors -->
+  <include file="$(find tamp_perception)/robots/segbot/launch/auxiliary.segbot.launch" />
+
+  <!-- intialize segbot pose -->
+  <include file="$(find segbot_gazebo)/launch/segbot_mobile_base.launch">
+    <arg name="use_full_gazebo_model" default="true" />
+    <arg name="launch_localization" default="true" />
+    <arg name="launch_move_base" default="true" />
+    <arg name="x" value="3.80" />
+    <arg name="y" value="0.67" />
+    <arg name="z" value="0" />
+    <arg name="roll" value="0" />
+    <arg name="pitch" value="0" />
+    <arg name="yaw" value="0" />
+  </include>
+
+  <!-- skip calibration for ur5-->
+  <node pkg="rostopic" type="rostopic" name="fake_joint_calibration" args="pub /calibrated std_msgs/Bool true" />
+
+  <!-- intialize ur5 pose for avoidance -->
+  <node name="joints_initializer" pkg="tamp_perception" type="arm_avoided.py" />
+
+  <!-- joint_state_controller, gripper_controller, arm_controller -->
+  <rosparam file="$(find tamp_perception)/robots/ur5/controller/controller.yaml" command="load"/>
+  <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" args="joint_state_controller gripper_controller arm_controller" respawn="false" output="screen"/>
+
+  <!-- load moveit for ur5 -->
+  <include file="$(find segbot_ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
+    <arg name="sim" value="true" />
+    <arg name="limited" value="true" />
+  </include>
+
+  <!-- load rviz for segbot_ur5 (upper: only segbot_ur5 lower: segbot_ur5 & world environment) -->
+  <!-- <include file="$(find segbot_ur5_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="config" value="true" />
+  </include> -->
+  <include file="$(find tamp_perception)/rviz/rviz.launch">
+    <arg name="config" value="setting_main" />
+  </include>
+</launch>

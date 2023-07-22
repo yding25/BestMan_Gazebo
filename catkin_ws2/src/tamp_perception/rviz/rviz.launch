@@ -1,0 +1,5 @@
+<launch>
+  <arg name="config" default="setting_main" />
+  <arg name="config_file" default="$(find tamp_perception)/rviz/$(arg config).rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg config_file)" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
+</launch>

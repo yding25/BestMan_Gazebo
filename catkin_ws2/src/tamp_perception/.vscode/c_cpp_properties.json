@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/yan/catkin_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/yan/catkin_ws/src/bwi_interruptable_action_server/include/**",
+        "/home/yan/catkin_ws/src/gazebo-pkgs/gazebo_grasp_plugin/include/**",
+        "/home/yan/catkin_ws/src/gazebo-pkgs/gazebo_state_plugins/include/**",
+        "/home/yan/catkin_ws/src/gazebo-pkgs/gazebo_test_tools/include/**",
+        "/home/yan/catkin_ws/src/gazebo-pkgs/gazebo_version_helpers/include/**",
+        "/home/yan/catkin_ws/src/gazebo-pkgs/gazebo_world_plugin_loader/include/**",
+        "/home/yan/catkin_ws/src/general-message-pkgs/object_msgs_tools/include/**",
+        "/home/yan/catkin_ws/src/roboticsgroup_gazebo_plugins/include/**",
+        "/home/yan/catkin_ws/src/segbot_sensors/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

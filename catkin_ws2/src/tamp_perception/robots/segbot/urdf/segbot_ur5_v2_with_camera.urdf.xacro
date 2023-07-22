@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<robot name="segbot"
+  xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- include urdf files -->
+  <xacro:include filename="$(find segbot_description)/urdf/v2/common.urdf.xacro" />
+  <xacro:include filename="$(find segbot_description)/gazebo/segbot.gazebo.xacro" />
+  <xacro:include filename="$(find segbot_description)/urdf/segbot_base.urdf.xacro" />
+  <xacro:include filename="$(find segbot_description)/urdf/mounts/hokuyo_mount.urdf.xacro" />
+  <xacro:include filename="$(find segbot_description)/urdf/mounts/kinect_mount.urdf.xacro" />
+  <xacro:include filename="$(find segbot_description)/urdf/mounts/sensor_plate_mount.urdf.xacro" />
+  <xacro:include filename="$(find tamp_perception)/robots/segbot/urdf/segbot_chassis_no_laptop.urdf.xacro" />
+
+  <!-- include file related to arm -->
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+  <!-- Add the segbot base -->
+  <xacro:segbot />
+  <xacro:segbot_chassis parent="base">
+    <origin xyz="${BASE_PLATE_X_OFFSET*INCH_TO_M} 0 ${BASE_PLATE_Z_OFFSET*INCH_TO_M}"/>
+  </xacro:segbot_chassis>
+
+  <!-- Add the forward facing kinect sensor for navigation -->
+  <xacro:kinect_mount name="nav_kinect" parent="back_right_vertical_beam" length="${SENSOR_BEAM_LENGTH*INCH_TO_M}">
+    <origin xyz="${1*INCH_TO_M} -${0.5*INCH_TO_M} ${11.5*INCH_TO_M}" rpy="-${M_PI/2} -${M_PI/2} 0" />
+  </xacro:kinect_mount>
+
+  <!-- Add the shared beam between the hokuyo and the sensor plate -->
+  <xacro:beam_8020 name="hokuyo_sonar_sensor_beam" parent="front_left_vertical_beam" length="${SENSOR_BEAM_LENGTH*INCH_TO_M}">
+    <origin xyz="${1*INCH_TO_M} ${0.5*INCH_TO_M} ${4.5*INCH_TO_M}" rpy="${M_PI/2} ${M_PI/2} 0" />
+  </xacro:beam_8020>
+
+  <!-- Add the hokuyo mount without the beam -->
+  <xacro:hokuyo_mount_without_beam name="nav_hokuyo" parent="hokuyo_sonar_sensor_beam" ros_topic="scan" update_rate="10" min_angle="${-(5 * M_PI)/12}" max_angle="${(5 * M_PI)/12}" range="20.0">
+    <origin xyz="${.5*INCH_TO_M} ${0.75*INCH_TO_M} ${SENSOR_BEAM_LENGTH/2*INCH_TO_M}" rpy="${M_PI/2} 0 ${M_PI/2}" />
+  </xacro:hokuyo_mount_without_beam>
+
+  <!-- Add the sensor plate mount -->
+  <xacro:sensor_plate_mount_without_beam parent="hokuyo_sonar_sensor_beam" length="${SENSOR_BEAM_LENGTH*INCH_TO_M}"/>
+
+  <!-- Add robot arm ur5 -->
+  <xacro:include filename="$(find tamp_perception)/robots/ur5/urdf/ur5e_single_arm.urdf.xacro" />
+  <joint name="arm_joint" type="fixed">
+    <parent link="laptop_base_plate_link" />
+    <child link = "ur5_base_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <xacro:gazebo_segbot_ros_controllers />
+
+  <!-- Add a beam to hold camera -->
+  <link name = "camera_link_height">
+    <visual>
+      <geometry>
+        <box size="0.03 0.03 0.5"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy = "0 0 0" xyz = "0 0 0.25"/>
+    </visual>
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000375" ixy="0.0" ixz="0.0" iyy="0.000208333" iyz="0.0" izz="0.000433333"/>
+    </inertial>
+  </link>
+
+  <joint name="camera_link_height_2_kinect_height" type="fixed">
+    <parent link="serving_plate_link"/>
+    <child link="camera_link_height"/>
+    <origin xyz="0 0 0 " rpy="0 0 0"/>
+  </joint>
+
+  <!-- Add kinetic camera-->
+  <xacro:property name="astra_cam_px" value="-0.129"/>
+  <xacro:property name="astra_cam_py" value="0.008"/>
+  <xacro:property name="astra_cam_pz" value="0.281"/>
+  <xacro:property name="astra_depth_rel_rgb_py" value="0.0250" />
+  <xacro:property name="astra_cam_rel_rgb_py" value="-0.0125" />
+  <xacro:property name="astra_dae_display_scale" value="1" />
+
+  <xacro:macro name="sensor_astra" params="parent">
+    <joint name="camera_rgb_joint" type="fixed">
+      <origin xyz="0 0 ${astra_cam_pz + 0.25}" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="camera_rgb_frame" />
+    </joint>
+    <link name="camera_rgb_frame"/>
+
+    <joint name="camera_rgb_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_rgb_frame" />
+      <child link="camera_rgb_optical_frame" />
+    </joint>
+    <link name="camera_rgb_optical_frame"/>
+
+    <joint name="camera_joint" type="fixed">
+      <origin xyz="0 ${astra_cam_rel_rgb_py} 0" rpy="0 0 0"/>
+      <parent link="camera_rgb_frame"/>
+      <child link="camera_link"/>
+    </joint>
+
+    <link name="camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://tamp_perception/meshes/astra.dae" scale="${astra_dae_display_scale} ${astra_dae_display_scale} ${astra_dae_display_scale}"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.0400 0.1650 0.0300"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.564" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0" izz="0.003879257" />
+      </inertial>
+    </link>
+
+    <joint name="camera_depth_joint" type="fixed">
+      <origin xyz="0 ${astra_depth_rel_rgb_py} 0" rpy="0 0 0" />
+      <parent link="camera_rgb_frame" />
+      <child link="camera_depth_frame" />
+    </joint>
+    <link name="camera_depth_frame"/>
+
+    <joint name="camera_depth_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_depth_frame" />
+      <child link="camera_depth_optical_frame" />
+    </joint>
+    <link name="camera_depth_optical_frame"/>
+
+  </xacro:macro>
+  <xacro:sensor_astra parent = "camera_link_height" />
+</robot>

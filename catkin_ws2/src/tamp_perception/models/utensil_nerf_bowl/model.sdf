@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="utensil_nerf_bowl">
+  
+    <static>false</static>
+    
+    <link name="link">
+      
+      <inertial>
+        <mass>0.5</mass>
+        <inertia>
+          <ixx>0.1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.1</iyy>
+          <iyz>0</iyz>
+          <izz>0.1</izz>
+        </inertia>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+      </inertial>
+
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://utensil_nerf_bowl/meshes/mesh_lowpoly.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>50.0</mu>
+              <mu2>50.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+          	<ode>
+          		<min_depth>0.001</min_depth>
+          		<max_vel>0.0</max_vel>
+          	</ode>
+          </contact>
+        </surface>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://utensil_nerf_bowl/meshes/mesh_lowpoly.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0 1 0</ambient>
+          <diffuse>0 1 0</diffuse>
+          <specular>0 1 0</specular>
+        </material>
+      </visual>
+
+    </link>
+  </model>
+</sdf>
