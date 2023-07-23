@@ -39,10 +39,10 @@ sudo apt update -qq
 ## Download source code
 ```
 cd catkin_ws/src
-sudo apt-get install zip unzip
-wget https://www.dropbox.com/s/yy4d88vktq1zk2s/src.zip?dl=0
-unzip src.zip
-sudo rm -rf src.zip
+```
+Please download 'src' folder from Link
+```
+https://github.com/yding25/BestMan_Gazebo/tree/master/catkin_ws1
 ```
 
 ## Change permission
